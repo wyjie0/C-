@@ -1,0 +1,34 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include"bignum.h"
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+int main(int argc, char** argv) {
+	
+	pBigInt num1;
+	pBigInt num2;
+	pBigInt ret;
+	
+	num1 = (pBigInt)malloc(sizeof(BigInt));
+	num2 = (pBigInt)malloc(sizeof(BigInt));
+	ret = (pBigInt)malloc(sizeof(BigInt));
+	
+	num1->num = "123456";
+	num1->sign = '1';
+	num1->digit = 6;
+	
+	num2->num = "789";
+	num2->sign = '1';
+	num2->digit = 3;
+	
+	printf(num1->num);
+	printf("%d", num2->digit);
+	
+//	ret = BigIntAdd(num1, num2);
+	
+//	printf(ret->num);
+	
+	return 0;
+}
