@@ -6,29 +6,35 @@
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 int main(int argc, char** argv) {
+
+	BigInt num1;
+	BigInt num2;
+//	BigInt* ret;
+
+//	num1 = (BigInt *)malloc(sizeof(BigInt));
+//	num2 = (BigInt *)malloc(sizeof(BigInt));
+//	ret = (pBigInt)malloc(sizeof(BigInt));
+
+	char number1[MAX], number2[MAX];
+
+	scanf("%s", number1);
+	scanf("%s", number2);
 	
-	pBigInt num1;
-	pBigInt num2;
-	pBigInt ret;
+	num1.num = number1;
+	num1.sign = '1';
+	num1.digit = strlen(num1.num);
 	
-	num1 = (pBigInt)malloc(sizeof(BigInt));
-	num2 = (pBigInt)malloc(sizeof(BigInt));
-	ret = (pBigInt)malloc(sizeof(BigInt));
+	num2.num = number2;
+	num2.sign = '1';
+	num2.digit = strlen(num2.num);
+
+	printf("num1:%d	 %s  %c  %d\n",strlen(num1.num),num1.num, num1.sign, num1.digit);
+	printf("num2:%d  %s  %c  %d\n",strlen(num1.num),num2.num, num2.sign, num2.digit);
 	
-	num1->num = "123456";
-	num1->sign = '1';
-	num1->digit = 6;
-	
-	num2->num = "789";
-	num2->sign = '1';
-	num2->digit = 3;
-	
-	printf(num1->num);
-	printf("%d", num2->digit);
-	
-//	ret = BigIntAdd(num1, num2);
-	
-//	printf(ret->num);
-	
+	BigInt * result;
+
+	result = BigIntAdd(num1, num2);
+	printf(result->num);
+
 	return 0;
 }
