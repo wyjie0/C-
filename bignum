@@ -1,73 +1,113 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <typeinfo.h>
 
 #include "bignum.h"
 
-pBigInt BigIntAdd(pBigInt num1, pBigInt num2)
+BigInt* BigIntAdd(BigInt num1, BigInt num2)
 {
-	pBigInt result;
-	result = (pBigInt)malloc(sizeof(BigInt));
-	int i, carry;
-	int count = 0;
+	printf("函数内\n");
+	printf("num1:strlen(num1.num)==%d	 num1.num==%s  num1.sign==%c  num1.digit==%d\n",strlen(num1.num),num1.num, num1.sign, num1.digit);
+	printf("num2:%d  %s  %c  %d\n",strlen(num1.num),num2.num, num2.sign, num2.digit);
+	
+	BigInt * result;
+	result = (BigInt *)malloc(sizeof(BigInt));
+	
+	int i, k, carry;
+
+//	int count = 0;
 	carry = 0;		//清除进位
-	result -> sign = num1 -> sign;		//保存符号
-	if(num2->digit > num1->digit){
-		pBigInt temp;
+	result->sign = num1.sign;		//保存符号
+	result->digit = num1.digit;
+	printf("result:%d  %s  %c  %d\n",strlen(result->num),result->num, result->sign, result->digit);
+	if(num2.digit > num1.digit){
+		BigInt temp;
 		temp = num1;
 		num1 = num2;
 		num2 = temp;
 	}
 	//将被加数复制到结果数组中 
-	for(i = 0; i < num1->digit; i++){
-		result->num[i] = num1->num[i];
-		result->digit = num1->digit;
+	for(int i = 0; i < num1.digit; i++){
+		result->num[i] = num1.num[i];
 	}
-	
+	printf("result:%d  %s  %c  %d\n",strlen(result->num),result->num, result->sign, result->digit);
+//	result->digit = num1.digit;
+
+//	for(int j = 0;j < num1.digit;j++){
+//		if(j < (num1.digit - num2.digit)){
+//			num1.num[j] = '0';
+//		}
+//		else{
+//			num1.num[j] = num2.num[j-num2.digit];
+//		}
+//	}
+//	num2.num = num1.num;
 	//给num2增加0位
-	for(int j = 0;j < num1->digit;j++){
-		if(j < num1->digit - num2->digit){
-			num1->num[j] = 0;
+	int preDigit = num2.digit;
+	for(int j = 0; j < num1.digit - preDigit; j++) {
+		for(int i = num2.digit-1; i >=0;i--){
+			num2.num[i + 1] = num2.num[i];
 		}
-		else{
-			num1->num[j] = num2->num[j];
-		}
+		num2.digit += 1;
+		num2.num[0] = '0';
 	}
+	num2.digit = preDigit;
+	num2.num[num1.digit] = '\0';
+	printf("增加0后：num2:%d  %s  %c  %d\n",strlen(num1.num),num2.num, num2.sign, num2.digit);
 	
-	for(i = num2->digit - 1; i >= num1->digit-num2->digit; i--){
+	for(i = num1.digit - 1,k = 0; i >= num1.digit-num2.digit; i--,k++){
 		//将对应位的数和进位数相加
-		result->num[i] += num2->num[i] + carry;
-		carry = result->num[i] / 10;
-		result->num[i] = result->num[i] % 10; 
+		char midData;
+		printf("%d   %d    %d\n",(num1.num[i]-'0'),(num2.num[i] - '0'),carry);
+		int ret = (num1.num[i]-'0')+ (num2.num[i] - '0') + carry;
+		carry = ret / 10;
+		midData = (ret%10 + '0');
+		result->num[k] = midData;//反向存储 
+		printf("i==%d   k== %d   %c\n",i, k,result->num[k]);
 	}
+	printf("一轮加法过后result:%d  %s  %c  %d\n",strlen(result->num),result->num, result->sign, result->digit);
 	while(carry){
 		if(i < 0){
-			for(int k = result->digit - 1; k >= 0; k--){
-				result->num[k + 1] = result->num[k];
-			}
-			result->num[0] = carry;
-			carry = 0;
+			result->num[result->digit] = '1';
 			result->digit += 1;
+			result->num[result->digit] = '\0';
+//			for(int index = num1.digit - 1; index >= 0; index--){
+//				result->num[index + 1] = result->num[index];
+//			}
+//			result->num[0] = (carry+'0');
+//			carry = 0;		
 		}
 		else{
-			result->num[i] = result->num[i] + carry;
-			carry = result->num[i] / 10;
-			result->num[i] = result->num[i] % 10; 
-			i -= 1;
+			int ret = (num1.num[i] - '0') + carry;
+			carry = ret / 10;
+			result -> num[k] = char(ret%10 + '0');
+			i--;
+			k++;
 		}
 	}
-	
+	while(i>=0){
+		result->num[k] = num1.num[i];
+		k++;
+		i--;
+	}
+	char number1[MAX];
+	for(int j = result->digit - 1,k = 0;j >= 0; j--, k++){
+		number1[k] = result->num[j];
+	}
+	number1[result->digit] = '\0';
+	result->num = number1;
 	return result;
 }
 
-void BigIntSub(pBigInt num1, pBigInt num2, pBigInt result){
-	
-}
-
-void BigIntMul(pBigInt num1, pBigInt num2, pBigInt result){
-	
-}
-
-void BigIntDiv(pBigInt num1, pBigInt num2, pBigInt result){
-	
-}
+//void BigIntSub(pBigInt num1, pBigInt num2, pBigInt result){
+//	
+//}
+//
+//void BigIntMul(pBigInt num1, pBigInt num2, pBigInt result){
+//	
+//}
+//
+//void BigIntDiv(pBigInt num1, pBigInt num2, pBigInt result){
+//	
+//}
